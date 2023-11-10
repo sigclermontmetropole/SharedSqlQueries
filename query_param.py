@@ -138,6 +138,12 @@ class QueryParamDialog(QDialog, FORM_CLASS):
             else:
                 edit_widget = QLabel(tr(u"Geometry of selected feature"))
 
+        elif type_widget == "selected_items" or "selected_items_text":
+            if type_options != "geom":
+                edit_widget = QLabel(tr(u"Attribute of selected features") + " : " + type_options)
+            else:
+                edit_widget = QLabel(tr(u"Geometry of selected features"))
+
         elif type_widget == "edited_geom":
             # geometry required
             self.mToolbar.setVisible(True)
@@ -223,7 +229,7 @@ class QueryParamDialog(QDialog, FORM_CLASS):
                 elif type_widget == "select":
                     param["value"] = widget.currentText()
 
-                # selected item : try to read the attribute of a selected item on map
+                # selected item : read the attribute of a selected item on map
                 elif type_widget == "selected_item":
 
                     currentLayer = self.iface.mapCanvas().currentLayer()
@@ -250,6 +256,49 @@ class QueryParamDialog(QDialog, FORM_CLASS):
                         param["value"] = "ST_GeomFromEWKT('SRID=" + str(currentLayer.crs().postgisSrid()) + ";" \
                                          + geom.asWkt() + "')"
 
+                # several selected items :  read the attribute or geometry of several selected item on map
+                elif type_widget == "selected_items" or "selected_items_text":
+
+                    currentLayer = self.iface.mapCanvas().currentLayer()
+                    if not type(currentLayer) is QgsVectorLayer:
+                        self.errorMessage = tr(u"Select a vector layer !")
+                        continue
+                    if currentLayer.selectedFeatureCount() <= 0:
+                        self.errorMessage = tr(u"Select one or more feature on map !")
+                        continue
+                    currentFeatures = currentLayer.selectedFeatures()
+
+                    # standard attribute :
+                    if type_options != "geom":
+
+                        if currentFeatures[0].fields().indexFromName(type_options) == -1:
+                            self.errorMessage = tr(u"This feature does not have such an attribute : ") + type_options
+                            continue
+
+                        sql_liste = ""
+                        for f in currentFeatures :
+                            geom = f.geometry()
+                            if sql_liste != "":
+                                sql_liste += ", "
+                            if type_widget == "selected_items_text":  # text field
+                                sql_liste += "'" + str(f.attribute(type_options)) + "'"
+                            else:  # numeric field
+                                sql_liste += str(f.attribute(type_options))
+
+                        param["value"] = sql_liste
+
+                    # geom attribut :
+                    else:
+                        sql_liste = ""
+                        for f in currentFeatures :
+                            geom = f.geometry()
+                            if sql_liste != "":
+                                sql_liste += ", "
+                            sql_liste += "ST_GeomFromEWKT('SRID=" + str(currentLayer.crs().postgisSrid()) + ";" \
+                                         + geom.asWkt() + "')"
+
+                        param["value"] = sql_liste
+
                 # selected item : try to read the attribute of a selected item on map
                 elif type_widget == "edited_geom":
                     geom = self.editedGeom
@@ -264,20 +313,21 @@ def splitParamNameAndType(paramName):
     type_options = ""
     name = paramName
 
-    for possible_type in ["text", "date", "select", "selected_item", "edited_geom"]:
+    for possible_type in ["text", "date", "select", "selected_item", "selected_items", "selected_items_text", "edited_geom"]:
         searched = possible_type + " "
         i = paramName.strip().find(searched)
         if i == 0:
             type_widget = possible_type
 
             # type options ( for type with : mytype myoptions; )
-            if possible_type == "select" or possible_type == "selected_item" or possible_type == "edited_geom" :
+            if possible_type == "select" or possible_type == "selected_item" or \
+                    possible_type == "selected_items" or possible_type == "selected_items_text" or possible_type == "edited_geom" :
                 i_end_type_with_option = paramName.strip().find(";")
                 type_options = paramName.strip()[:i_end_type_with_option]
                 searched = type_options + ";"
 
             # remove type name from option (return myoptions istead of mytype myoptions)
-            if possible_type == "selected_item" or possible_type == "edited_geom":
+            if possible_type == "selected_item" or possible_type == "selected_items" or possible_type == "selected_items_text" or possible_type == "edited_geom":
                 type_options = type_options[len(possible_type + " "):].strip()
 
             name = paramName.strip()[len(searched):].strip()

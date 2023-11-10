@@ -92,11 +92,26 @@ Type of parameters :
 ```sql
 ... AND name = ## selected_item name; Name : ##
 ```
-    Your query must end with a **;** to split it from the rest of your parameter description.
+Your query must end with a **;** to split it from the rest of your parameter description.
     *Important* : If specific attribute "geom" is given, then the geom of the entity will be used in request (the ST_GeomFromEWKT will be used automaticaly to transform geometry from Qgis geometry to sql)
 	
 ```sql
 ... AND geom = ## selected_item geom; Geometry of selected feature : ##
+```
+
+* **selected_items** or **selected_items_text** : if your parameter starts with this keyword, that means the user must choose one or more entities on the map. Then the attribute used in sql will be the attribute of the entity. This attribute is given in the optional type attribute.
+The returned sql is a list of attribues separated by comma that can be used with IN statement.
+If attribute is numeric, use **selected_items**, if attribute is text use **selected_items_text** to add quote to each value.
+```sql
+... AND name IN ( ## selected_items_text name; Name : ## )
+    OR range IN ( ## selected_items range; Range : ## )
+```
+Your query must end with a **;** to split it from the rest of your parameter description.
+    *Important* : If specific attribute "geom" is given, then the geom of the entity will be used in request (the ST_GeomFromEWKT will be used automaticaly to transform geometry from Qgis geometry to sql)
+Result is a list of SQL geometry that can be used with ST_Collect Postgis function and an ARRAY constructor :
+	
+```sql
+... AND st_intersects( st_collect( ARRAY [ ## selected_items geom; Geometry of selected features : ## ] ) )
 ```
 	
 * **edited_geom** : display a tool to edit a geometry on map. You have to specify the type of geometry you want (point, line, polygon, use "&" to allow several types) :

@@ -30,6 +30,8 @@ translation_fr = {
         u"Pas de paramètre de dossier trouvé dans la requête !",
     u"Select just one feature on map !":
         u"Selectionnez une et une seule entité sur la carte !",
+    u"Select one or more feature on map !":
+        u"Selectionnez une ou plusieurs entités sur la carte !",
     u"Select a vector layer !":
         u"Sélectionnez une couche vectorielle !",
     u"This feature does not have such an attribute : ":
@@ -38,6 +40,10 @@ translation_fr = {
         u"Attribut de l'entité sélectionné",
     u"Geometry of selected feature":
         u"Géométrie de l'entité sélectionnée",
+    u"Attribute of selected features":
+        u"Attribut des entités sélectionnées",
+    u"Geometry of selected features":
+        u"Géométrie des entités sélectionnées",
     u"Click a point on map":
         u"Cliquez dans la carte pour saisir un point",
     u"Request performed":
