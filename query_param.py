@@ -138,7 +138,7 @@ class QueryParamDialog(QDialog, FORM_CLASS):
             else:
                 edit_widget = QLabel(tr(u"Geometry of selected feature"))
 
-        elif type_widget == "selected_items" or "selected_items_text":
+        elif type_widget == "selected_items" or type_widget == "selected_items_text":
             if type_options != "geom":
                 edit_widget = QLabel(tr(u"Attribute of selected features") + " : " + type_options)
             else:
@@ -257,7 +257,7 @@ class QueryParamDialog(QDialog, FORM_CLASS):
                                          + geom.asWkt() + "')"
 
                 # several selected items :  read the attribute or geometry of several selected item on map
-                elif type_widget == "selected_items" or "selected_items_text":
+                elif type_widget == "selected_items" or type_widget == "selected_items_text":
 
                     currentLayer = self.iface.mapCanvas().currentLayer()
                     if not type(currentLayer) is QgsVectorLayer:
