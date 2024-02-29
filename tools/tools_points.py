@@ -65,15 +65,15 @@ class CreatePointTool(QgsMapTool):
 
     def canvasPressEvent(self, event):
         if self.mRb:
-            self.mRb.reset(True)
+            self.mRb.reset()
 
     def canvasMoveEvent(self,event):
         if not self.mRb:
-            self.mRb = QgsRubberBand(self.mCanvas, True)
+            self.mRb = QgsRubberBand(self.mCanvas, QgsWkbTypes.LineGeometry )
             self.mRb.setColor(self.mColor)
             self.mRb.setWidth(self.mWidth)   
                  
-        self.mRb.reset(True)
+        self.mRb.reset()
         x = event.pos().x()
         y = event.pos().y()        
         pos = self.mCanvas.getCoordinateTransform().toMapCoordinates(x, y)
@@ -93,7 +93,7 @@ class CreatePointTool(QgsMapTool):
 
 
         newGeom = QgsGeometry().fromPointXY(pos)
-        self.mRb.reset(True)
+        self.mRb.reset()
         self.mRb.setToGeometry(newGeom, None)
 
         # event end editing geom
@@ -105,7 +105,7 @@ class CreatePointTool(QgsMapTool):
   
     def deactivate(self):
         if self.mRb:
-            self.mRb.reset(True)
+            self.mRb.reset()
             self.mRb = None
         if self != None:
             self.deactivated.emit()
@@ -162,17 +162,17 @@ class CreateLineTool(QgsMapTool):
 
     def canvasPressEvent(self, event):
         if self.mRb1:
-            self.mRb1.reset(True)
+            self.mRb1.reset()
 
     def canvasMoveEvent(self, event):
 
         if not self.mRb2:
-            self.mRb2 = QgsRubberBand(self.mCanvas, True)
+            self.mRb2 = QgsRubberBand(self.mCanvas, QgsWkbTypes.LineGeometry )
             self.mRb2.setColor(self.mColor2)
             self.mRb2.setWidth(self.mWidth2)
             self.mRb2.setLineStyle(self.mStyle2)
 
-        self.mRb2.reset(True)
+        self.mRb2.reset()
         if len(self.mPoints) > 0:
             # last point coordinate
             x = event.pos().x()
@@ -197,7 +197,7 @@ class CreateLineTool(QgsMapTool):
 
         # Rubber
         if not self.mRb1:
-            self.mRb1 = QgsRubberBand(self.mCanvas, True)
+            self.mRb1 = QgsRubberBand(self.mCanvas, QgsWkbTypes.LineGeometry )
             self.mRb1.setColor(self.mColor1)
             self.mRb1.setWidth(self.mWidth1)
             self.mRb1.setLineStyle(self.mStyle1)
@@ -216,8 +216,8 @@ class CreateLineTool(QgsMapTool):
         if len(self.mPoints) >= 3:
             self.mGeom = QgsGeometry().fromPolylineXY(self.mPoints)
 
-        self.mRb1.reset(True)
-        self.mRb2.reset(True)
+        self.mRb1.reset()
+        self.mRb2.reset()
         self.mRb1.setToGeometry(self.mGeom, None)
 
         # stop here for intermediate points
@@ -238,9 +238,9 @@ class CreateLineTool(QgsMapTool):
 
     def deactivate(self):
         if self.mRb1:
-            self.mRb1.reset(True)
+            self.mRb1.reset()
             self.mRb1 = None
-            self.mRb2.reset(True)
+            self.mRb2.reset()
             self.mRb2 = None
         if self != None:
             self.deactivated.emit()
@@ -298,17 +298,17 @@ class CreatePolygonTool(QgsMapTool):
 
     def canvasPressEvent(self, event):
         if self.mRb1:
-            self.mRb1.reset(True)
+            self.mRb1.reset()
 
     def canvasMoveEvent(self, event):
 
         if not self.mRb2:
-            self.mRb2 = QgsRubberBand(self.mCanvas, True)
+            self.mRb2 = QgsRubberBand(self.mCanvas, QgsWkbTypes.LineGeometry )
             self.mRb2.setColor(self.mColor2)
             self.mRb2.setWidth(self.mWidth2)
             self.mRb2.setLineStyle(self.mStyle2)
 
-        self.mRb2.reset(True)
+        self.mRb2.reset()
         if len(self.mPoints) > 0:
             # last point coordinate
             x = event.pos().x()
@@ -333,7 +333,7 @@ class CreatePolygonTool(QgsMapTool):
 
         # Rubber
         if not self.mRb1:
-            self.mRb1 = QgsRubberBand(self.mCanvas, True)
+            self.mRb1 = QgsRubberBand(self.mCanvas, QgsWkbTypes.LineGeometry )
             self.mRb1.setColor(self.mColor1)
             self.mRb1.setWidth(self.mWidth1)
             self.mRb1.setLineStyle(self.mStyle1)
@@ -351,8 +351,8 @@ class CreatePolygonTool(QgsMapTool):
         if len(self.mPoints) >= 3:
             self.mGeom = QgsGeometry().fromPolygonXY([self.mPoints])
 
-        self.mRb1.reset(True)
-        self.mRb2.reset(True)
+        self.mRb1.reset()
+        self.mRb2.reset()
         self.mRb1.setToGeometry(self.mGeom, None)
 
         # stop here for intermediate points
@@ -372,9 +372,9 @@ class CreatePolygonTool(QgsMapTool):
 
     def deactivate(self):
         if self.mRb1:
-            self.mRb1.reset(True)
+            self.mRb1.reset()
             self.mRb1 = None
-            self.mRb2.reset(True)
+            self.mRb2.reset()
             self.mRb2 = None
         if self != None:
             self.deactivated.emit()

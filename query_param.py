@@ -7,7 +7,7 @@ from qgis.PyQt.QtWidgets import *
 from qgis.PyQt.QtCore import Qt, QObject
 
 from qgis.gui import QgsMapCanvas, QgsRubberBand
-from qgis.core import QgsVectorLayer
+from qgis.core import QgsVectorLayer, QgsWkbTypes
 
 from .customSqlQuery import CustomSqlQuery
 from .translate import tr
@@ -56,7 +56,7 @@ class QueryParamDialog(QDialog, FORM_CLASS):
         self.editedGeom = None # current edited geometry
 
         # rubber to display edited geom after it has been validated
-        self.mRb = QgsRubberBand(self.iface.mapCanvas(), True)
+        self.mRb = QgsRubberBand(self.iface.mapCanvas(), QgsWkbTypes.LineGeometry )
         self.mRb.setColor(QColor(255, 20, 20, 200))
         self.mRb.setWidth(5)
 
